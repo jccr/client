@@ -32,7 +32,7 @@ function UserMenu({ auth, bridge, onLogout, serviceUrl, settings }) {
   const onProfileSelected = () =>
     isThirdParty && bridge.call(bridgeEvents.PROFILE_REQUESTED);
 
-  // Generate the correct props for the profile <MenuItem> component
+  // Generate dynamic props for the profile <MenuItem> component
   const profileItemProps = (() => {
     const props = {};
     if (isSelectableProfile) {
@@ -40,8 +40,6 @@ function UserMenu({ auth, bridge, onLogout, serviceUrl, settings }) {
         props.href = serviceUrl('user', { user: auth.username });
       }
       props.onClick = onProfileSelected;
-    } else {
-      props.isDisabled = true;
     }
     return props;
   })();
@@ -51,7 +49,11 @@ function UserMenu({ auth, bridge, onLogout, serviceUrl, settings }) {
     <div className="user-menu">
       <Menu label={menuLabel} title={auth.displayName} align="right">
         <MenuSection>
-          <MenuItem label={auth.displayName} {...profileItemProps} />
+          <MenuItem
+            label={auth.displayName}
+            isDisabled={!isSelectableProfile}
+            {...profileItemProps}
+          />
           {!isThirdParty && (
             <MenuItem
               label="Account settings"

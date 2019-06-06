@@ -124,7 +124,7 @@ describe('UserMenu', () => {
         const wrapper = createUserMenu();
 
         const profileMenuItem = findMenuItem(wrapper, fakeAuth.displayName);
-        assert.isUndefined(profileMenuItem.prop('isDisabled'));
+        assert.notOk(profileMenuItem.prop('isDisabled'));
       });
 
       it('should have a callback if enabled', () => {
@@ -186,62 +186,61 @@ describe('UserMenu', () => {
   });
 
   describe('log out menu item', () => {
-    describe('presence', () => {
-      const tests = [
-        {
-          it: 'present for first-party user if no service configured',
-          isThirdParty: false,
-          serviceConfigReturns: null,
-          expected: true,
-        },
-        {
-          it:
-            'present for first-party user if service supports `onLogoutRequest`',
-          isThirdParty: false,
-          serviceConfigReturns: { onLogoutRequestProvided: true },
-          expected: true,
-        },
-        {
-          it:
-            'present for first-party user if service does not support `onLogoutRequest`',
-          isThirdParty: false,
-          serviceConfigReturns: { onLogoutRequestProvided: false },
-          expected: true,
-        },
-        {
-          it: 'absent for third-party user if no service configured',
-          isThirdParty: true,
-          serviceConfigReturns: null,
-          expected: false,
-        },
-        {
-          it:
-            'present for third-party user if service supports `onLogoutRequest`',
-          isThirdParty: true,
-          serviceConfigReturns: { onLogoutRequestProvided: true },
-          expected: true,
-        },
-        {
-          it: 'absent for third-party user if `onLogoutRequest` not supported',
-          isThirdParty: true,
-          serviceConfigReturns: { onLogoutRequestProvided: false },
-          expected: false,
-        },
-      ];
+    const tests = [
+      {
+        it: 'should be present for first-party user if no service configured',
+        isThirdParty: false,
+        serviceConfigReturns: null,
+        expected: true,
+      },
+      {
+        it:
+          'should be present for first-party user if service supports `onLogoutRequest`',
+        isThirdParty: false,
+        serviceConfigReturns: { onLogoutRequestProvided: true },
+        expected: true,
+      },
+      {
+        it:
+          'should be present for first-party user if service does not support `onLogoutRequest`',
+        isThirdParty: false,
+        serviceConfigReturns: { onLogoutRequestProvided: false },
+        expected: true,
+      },
+      {
+        it: 'should be absent for third-party user if no service configured',
+        isThirdParty: true,
+        serviceConfigReturns: null,
+        expected: false,
+      },
+      {
+        it:
+          'should be present for third-party user if service supports `onLogoutRequest`',
+        isThirdParty: true,
+        serviceConfigReturns: { onLogoutRequestProvided: true },
+        expected: true,
+      },
+      {
+        it:
+          'should be absent for third-party user if `onLogoutRequest` not supported',
+        isThirdParty: true,
+        serviceConfigReturns: { onLogoutRequestProvided: false },
+        expected: false,
+      },
+    ];
 
-      tests.forEach(test => {
-        it(`should be ${test.it}`, () => {
-          fakeIsThirdPartyUser.returns(test.isThirdParty);
-          fakeServiceConfig.returns(test.serviceConfigReturns);
+    tests.forEach(test => {
+      it(test.it, () => {
+        fakeIsThirdPartyUser.returns(test.isThirdParty);
+        fakeServiceConfig.returns(test.serviceConfigReturns);
 
-          const wrapper = createUserMenu();
+        const wrapper = createUserMenu();
 
-          const logOutMenuItem = findMenuItem(wrapper, 'Log out');
-          assert.equal(logOutMenuItem.exists(), test.expected);
-          if (test.expected) {
-            assert.equal(logOutMenuItem.prop('onClick'), fakeOnLogout);
-          }
-        });
+        const logOutMenuItem = findMenuItem(wrapper, 'Log out');
+        assert.equal(logOutMenuItem.exists(), test.expected);
+        if (test.expected) {
+          assert.equal(logOutMenuItem.prop('onClick'), fakeOnLogout);
+        }
       });
     });
   });

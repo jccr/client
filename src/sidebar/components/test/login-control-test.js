@@ -57,7 +57,7 @@ describe('loginControl', function() {
     });
   });
 
-  context('user menu', () => {
+  describe('user menu', () => {
     it('should render a user menu if the user is logged in', () => {
       const el = util.createDirective(document, 'loginControl', {
         auth: {
